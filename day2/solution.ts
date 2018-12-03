@@ -1,9 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import readInput from '../helpers/readInput';
 
-const pathToInput = path.join(__dirname, 'input.txt');
-const input = fs.readFileSync(pathToInput, 'utf8');
-const inputArray: string[] = input.split('\n');
+const inputArray: string[] = readInput(__dirname);
 
 // Part 1
 
