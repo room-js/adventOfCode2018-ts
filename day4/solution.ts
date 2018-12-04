@@ -22,6 +22,12 @@ interface IMostSleepingGuard {
   maxValue: number;
 }
 
+interface IMostFrequentlySleepingGuard {
+  id: number;
+  maxValue: number;
+  minute: number;
+}
+
 // TODO: optimize the sorting algorithm
 function sortRecords(a: string, b: string): number {
   const ms1 = new Date(a.slice(1, 17)).getTime();
@@ -77,10 +83,17 @@ const mostSleepingGuard: IMostSleepingGuard = {
   sleepMinutes: 0,
 };
 
+const mostFrequentlySleepingGuard: IMostFrequentlySleepingGuard = {
+  id: 0,
+  maxValue: 0,
+  minute: 0,
+};
+
 const allGuardIds: string[] = Object.keys(sleepTimeTable);
 
 allGuardIds.forEach((guardId: string) => {
-  const minutes = sleepTimeTable[Number(guardId)];
+  const id = Number(guardId);
+  const minutes = sleepTimeTable[id];
   const sleepMinutes = minutes.filter(Boolean).length;
   const maxValue = Math.max(...minutes);
 
@@ -90,11 +103,19 @@ allGuardIds.forEach((guardId: string) => {
     mostSleepingGuard.minutes = minutes;
     mostSleepingGuard.maxValue = maxValue;
   }
+
+  if (maxValue > mostFrequentlySleepingGuard.maxValue) {
+    mostFrequentlySleepingGuard.id = id;
+    mostFrequentlySleepingGuard.maxValue = maxValue;
+    mostFrequentlySleepingGuard.minute = minutes.indexOf(maxValue);
+  }
 });
 
 const maxSleepyValue: number = Math.max(...mostSleepingGuard.minutes);
 const mostSleepyMinute: number = mostSleepingGuard.minutes.indexOf(maxSleepyValue);
 
-const part1Result = mostSleepingGuard.id * mostSleepyMinute;
+const part1Result: number = mostSleepingGuard.id * mostSleepyMinute;
+const part2Result: number = mostFrequentlySleepingGuard.id * mostFrequentlySleepingGuard.minute;
 
 console.log('[PART 1] Answer:', part1Result);
+console.log('[PART 2] Answer:', part2Result);
