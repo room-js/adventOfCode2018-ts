@@ -83,4 +83,4 @@ const minLen: IAcc = Object.keys(counts)
     return acc;
   }, initValue);
 
-console.log('[PART 2]: Answer:', minLen.value);
+console.log('[PART 2] Answer:', minLen.value);
