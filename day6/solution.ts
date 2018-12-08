@@ -4,6 +4,7 @@ interface ICell {
   coord?: number; // if it exists - that means the cell is one of the coordinates. Number is a coordinate index
   isEqualMinDist?: boolean;
   minDistIndex?: number;
+  smallDistance?: boolean;
 }
 
 const inputArray: string[] = readInput(__dirname);
@@ -30,28 +31,34 @@ let curDistances: number[];
 let curMinDistance: number;
 let isEqualMinDist: boolean;
 let minDistIndex: number;
+let shortLocationRegionArea: number = 0;
+let curTotalDistance: number;
 
 for (let x = 0; x <= maxX; x++) {
   grid[x] = grid[x] || [];
   for (let y = 0; y <= maxY; y++) {
     grid[x][y] = {};
     curCoordIndex = coords.findIndex((c) => c[0] === x && c[1] === y);
+    curDistances = coords.map((c, index) => calcDistance(c, [x, y]));
+    curMinDistance = Math.min(...curDistances);
+    isEqualMinDist = curDistances.filter((d) => d === curMinDistance).length > 1;
+    minDistIndex = curDistances.findIndex((cd) => cd === curMinDistance);
+    curTotalDistance = curDistances.reduce((dist: number, curDist: number) => (dist + curDist), 0);
+
+    if (curTotalDistance < 10000) {
+      shortLocationRegionArea++;
+    }
 
     if (curCoordIndex !== -1) {
       grid[x][y].coord = curCoordIndex;
       continue;
     }
 
-    curDistances = coords.map((c, index) => calcDistance(c, [x, y]));
-    curMinDistance = Math.min(...curDistances);
-    isEqualMinDist = curDistances.filter((d) => d === curMinDistance).length > 1;
-
     if (isEqualMinDist) {
       grid[x][y].isEqualMinDist = true;
       continue;
     }
 
-    minDistIndex = curDistances.findIndex((cd) => cd === curMinDistance);
     grid[x][y].minDistIndex = minDistIndex;
     if (x === 0 || x === maxX || y === 0 || y === maxY) {
       infiniteIndices.add(minDistIndex);
@@ -65,3 +72,4 @@ const finiteAreas: number[] = areas.filter((v, i) => v && !infiniteIndices.has(i
 const maxFiniteArea: number = Math.max(...finiteAreas) + 1; // include 1 for coordinate itself
 
 console.log('[PART 1]: Size of the largest finite area:', maxFiniteArea);
+console.log('[PART 2]: Size of region with short total distance:', shortLocationRegionArea);
